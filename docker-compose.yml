@@ -1,6 +1,10 @@
 version: "3.8"
 services:
   postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+      target: postgres
     container_name: container-pg
     image: postgres
     hostname: localhost
@@ -12,6 +16,23 @@ services:
       POSTGRES_DB: social_db
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: admin
+      DB_PASSWORD: root
+      DB_NAME: social_db
     restart: unless-stopped
 
 volumes:

@@ -1,0 +1,2 @@
+FROM postgres:16 as postgres
+WORKDIR /app
